@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Vacaciones en Familia · Decisión de Playa en Colombia</title>
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Vacaciones en Familia 2026–2027 · Comparador Oficial de Playas" />
+  <meta property="og:description" content="158 fotos oficiales (hoteles y habitaciones), mapa interactivo, reviews y simulador de precios ($10M COP) para 2 adultos + 2 niños." />
+  <meta property="og:url" content="https://lmsutools.github.io/vacaciones-familia-colombia/" />
+  <meta property="og:image" content="https://lmsutools.github.io/vacaciones-familia-colombia/assets/photos/hotel-las-mananitas/04_instalaciones.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Top App Bar -->
+  <header class="top-header">
+    <div class="header-inner">
+      <div class="brand-block">
+        <span class="brand-eyebrow">Simulación Directa en Sitios Oficiales</span>
+        <h1>Vacaciones Familiares 2026–2027</h1>
+        <div class="family-pill">
+          <span>👨‍👩‍👧‍👦 2 adultos + 2 niños (7 y 10 años)</span>
+          <span class="sep">•</span>
+          <span>📅 26 dic – 2 ene</span>
+          <span class="sep">•</span>
+          <span class="budget-tag">🎯 Tope: $10.000.000 COP</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btn-open-share" class="btn-primary-pill" type="button">
+          <span>📲</span>
+          <span>Compartir con mi esposa</span>
+        </button>
+        <button id="btn-jump-discounts" class="btn-ghost-pill" type="button">
+          <span>🔥</span>
+          <span>Descuentos</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Desktop / Tablet Top Navigation -->
+    <nav class="desktop-nav" aria-label="Navegación principal">
+      <button class="nav-tab active" data-tab="hoteles" type="button">🏨 Hoteles y Fotos</button>
+      <button class="nav-tab" data-tab="mapa" type="button">🗺️ Mapa Interactivo</button>
+      <button class="nav-tab" data-tab="simulador" type="button">🧮 Simulador de Precios</button>
+      <button class="nav-tab" data-tab="decision" type="button">⚖️ Descuentos y Decisión</button>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-shell">
+    <!-- TAB 1: HOTELES Y GALERÍAS -->
+    <section id="tab-hoteles" class="tab-panel active">
+      <div class="executive-banner">
+        <div class="banner-icon">💡</div>
+        <div class="banner-copy">
+          <strong>Resumen rápido para decidir hoy:</strong>
+          En semana de Fin de Año (7 noches), <strong>Capurganá ($10,01M con 3 tours y barra libre)</strong> y <strong>Bahía Solano ($8,94M en vivo por 5 noches)</strong> entran en tu presupuesto. En San Andrés, <strong>Sol Caribe</strong> baja a <strong>~$8,56M–$9,28M</strong> ajustando a 5 noches, y <strong>Decameron Maryland</strong> tiene <strong>-39% Black Days</strong> (ahorras $9,47M).
+        </div>
+      </div>
+
+      <!-- Filter Chips & Sort -->
+      <div class="controls-bar">
+        <div class="chips-scroll" id="filter-chips" role="tablist" aria-label="Filtrar hoteles">
+          <button class="chip active" data-filter="all" type="button">Todos (10)</button>
+          <button class="chip" data-filter="budget" type="button">✅ Entran en ~$10M</button>
+          <button class="chip" data-filter="san-andres" type="button">🏝️ San Andrés</button>
+          <button class="chip" data-filter="otros" type="button">🌴 Otras Playas</button>
+          <button class="chip" data-filter="discount" type="button">🔥 Con Descuento</button>
+          <button class="chip" data-filter="favorites" type="button">❤️ Favoritos (<span id="fav-count-chip">0</span>)</button>
+        </div>
+        <div class="sort-box">
+          <label for="sort-select">Ordenar:</label>
+          <select id="sort-select">
+            <option value="recommended">Recomendado familia</option>
+            <option value="price-asc">Menor precio primero</option>
+            <option value="rating-desc">Mejor puntuación</option>
+            <option value="available-first">Disponibles primero</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="hotels-grid" class="hotels-grid"></div>
+    </section>
+
+    <!-- TAB 2: MAPA INTERACTIVO -->
+    <section id="tab-mapa" class="tab-panel">
+      <div class="map-header-card">
+        <div>
+          <h2>Mapa de Playas y Hoteles Comparados</h2>
+          <p class="muted">Toca cualquier pin de precio para ver fotos de habitaciones, alimentación y si entra en los $10M.</p>
+        </div>
+        <div class="region-zoom-bar" id="region-zoom-bar">
+          <button class="zoom-btn active" data-region="colombia" type="button">🇨🇴 Todo Colombia</button>
+          <button class="zoom-btn" data-region="san-andres" type="button">🏝️ San Andrés Centro y Playas</button>
+          <button class="zoom-btn" data-region="capurgana" type="button">🦜 Capurganá</button>
+          <button class="zoom-btn" data-region="bahia-solano" type="button">🐋 Bahía Solano</button>
+          <button class="zoom-btn" data-region="mayapo" type="button">🌵 Mayapo (Guajira)</button>
+          <button class="zoom-btn" data-region="covenas-mucura" type="button">🐚 Coveñas e Isla Múcura</button>
+        </div>
+      </div>
+
+      <div class="map-layout">
+        <div class="map-wrapper">
+          <div id="vacation-map"></div>
+          <div class="map-legend">
+            <span><i class="dot green"></i> Entra en ~$10M</span>
+            <span><i class="dot amber"></i> Disponible &gt;$10M</span>
+            <span><i class="dot slate"></i> Agotado Fin de Año</span>
+          </div>
+        </div>
+        <aside id="map-preview-card" class="map-preview-card">
+          <div class="map-preview-empty">
+            <span>📍</span>
+            <p>Selecciona un hotel en el mapa o usa los botones de región para acercar las playas de San Andrés y ver la distancia a Spratt Bight y el muelle de Johnny Cay.</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- TAB 3: SIMULADOR DE PRECIOS -->
+    <section id="tab-simulador" class="tab-panel">
+      <div class="sim-layout">
+        <div class="sim-controls-card">
+          <h2>🧮 Simulador Interactivo de Presupuesto</h2>
+          <p class="muted">Ajusta noches, fechas, descuentos y extras reales (tarjetas OCCRE, lanchas o vuelos) usando las tarifas oficiales verificadas.</p>
+
+          <div class="sim-group">
+            <label class="sim-label">1. Ventana de fechas (2 adultos + 2 niños de 7 y 10 años)</label>
+            <div class="segmented" id="sim-season">
+              <button class="seg-btn active" data-season="nye" type="button">🎆 Fin de Año<br><small>26 dic – 2 ene</small></button>
+              <button class="seg-btn" data-season="pre-nye" type="button">🎄 Antes del 31 dic<br><small>Ej. 20–27 dic</small></button>
+              <button class="seg-btn" data-season="jan" type="button">☀️ Enero 2027<br><small>Post-puente (16–23 ene)</small></button>
+            </div>
+          </div>
+
+          <div class="sim-group">
+            <div class="sim-label-row">
+              <label class="sim-label">2. Noches de estadía</label>
+              <strong id="sim-nights-label" class="accent-val">7 noches</strong>
+            </div>
+            <div class="segmented segmented-4" id="sim-nights">
+              <button class="seg-btn" data-nights="4" type="button">4 noches</button>
+              <button class="seg-btn" data-nights="5" type="button">5 noches</button>
+              <button class="seg-btn" data-nights="6" type="button">6 noches</button>
+              <button class="seg-btn active" data-nights="7" type="button">7 noches</button>
+            </div>
+          </div>
+
+          <div class="sim-group">
+            <label class="sim-label">3. Descuentos y Modo "Bolsillo Real"</label>
+            <label class="toggle-row">
+              <input type="checkbox" id="sim-discounts" checked />
+              <span>Aplicar descuentos oficiales (Black Days -39% / -50% y VIP -5%)</span>
+            </label>
+            <label class="toggle-row">
+              <input type="checkbox" id="sim-extras" checked />
+              <span>Sumar extras obligatorios en destino (OCCRE $584k, lanchas, tasas)</span>
+            </label>
+          </div>
+
+          <div class="sim-group">
+            <div class="sim-label-row">
+              <label class="sim-label" for="sim-flights">4. Vuelos estimados por persona (×4)</label>
+              <strong id="sim-flights-label" class="accent-val">$0 COP</strong>
+            </div>
+            <input type="range" id="sim-flights" min="0" max="1500000" step="50000" value="0" />
+            <div class="range-hints">
+              <span>$0 (Solo hotel)</span>
+              <span>$600k/pers.</span>
+              <span>$1,5M/pers.</span>
+            </div>
+          </div>
+
+          <div class="sim-group">
+            <div class="sim-label-row">
+              <label class="sim-label" for="sim-budget">5. Presupuesto máximo familia</label>
+              <strong id="sim-budget-label" class="accent-val">$10.000.000 COP</strong>
+            </div>
+            <input type="range" id="sim-budget" min="7000000" max="20000000" step="500000" value="10000000" />
+            <div class="range-hints">
+              <span>$7M</span>
+              <span>$10M (Meta)</span>
+              <span>$20M</span>
+            </div>
+          </div>
+
+          <div id="sim-quick-insight" class="sim-insight-box"></div>
+        </div>
+
+        <div class="sim-results-col">
+          <div class="sim-results-header">
+            <h3>Ranking en vivo según tu simulación</h3>
+            <span id="sim-summary-pill" class="pill-info">7 noches · Con descuentos · Con extras</span>
+          </div>
+          <div id="simulator-results" class="simulator-results"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: DESCUENTOS Y DECISIÓN -->
+    <section id="tab-decision" class="tab-panel">
+      <div class="decision-grid">
+        <div class="card-panel">
+          <h2>⏳ Fechas Límite y Descuentos Activos</h2>
+          <p class="muted">Estas promociones y ventanas de cancelación gratuita determinan qué conviene bloquear pronto:</p>
+          <div class="timeline-list" id="urgency-timeline"></div>
+        </div>
+
+        <div class="card-panel">
+          <h2>📲 Compartir y Decidir con tu Esposa</h2>
+          <p class="muted">Abre esta guía en el celular o iPad de tu esposa usando el código QR en tu Wi-Fi o envíale un resumen listo por WhatsApp.</p>
+          <div class="share-inline-actions">
+            <button id="btn-share-inline" class="btn-primary-pill" type="button">📷 Ver Código QR y Enlace Público</button>
+            <button id="btn-wa-inline" class="btn-wa" type="button">💬 Enviar Top Opciones por WhatsApp</button>
+          </div>
+          <div class="share-tip">
+            <strong>Archivo único portátil:</strong> Si están fuera de casa, envíale por WhatsApp o AirDrop el archivo <code>compartir-vacaciones-esposa.html</code> para abrirlo sin servidor local.
+          </div>
+        </div>
+      </div>
+
+      <div class="card-panel compare-panel">
+        <div class="compare-header">
+          <div>
+            <h2>⚖️ Comparador Lado a Lado</h2>
+            <p class="muted" id="compare-subtitle">Comparando tus favoritos ❤️ (o las 4 opciones clave si aún no marcas favoritos).</p>
+          </div>
+          <button id="btn-clear-favs" class="btn-ghost-sm" type="button">Restablecer selección</button>
+        </div>
+        <div class="table-scroll">
+          <table class="compare-table" id="compare-table"></table>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Mobile Sticky Bottom Navigation -->
+  <nav class="mobile-bottom-nav" aria-label="Navegación móvil">
+    <button class="mnav-btn active" data-tab="hoteles" type="button">
+      <span class="mnav-icon">🏨</span>
+      <span>Hoteles</span>
+    </button>
+    <button class="mnav-btn" data-tab="mapa" type="button">
+      <span class="mnav-icon">🗺️</span>
+      <span>Mapa</span>
+    </button>
+    <button class="mnav-btn" data-tab="simulador" type="button">
+      <span class="mnav-icon">🧮</span>
+      <span>Simulador</span>
+    </button>
+    <button class="mnav-btn" data-tab="decision" type="button">
+      <span class="mnav-icon">🔥</span>
+      <span>Decisión</span>
+    </button>
+  </nav>
+
+  <!-- Full-Screen Photo Lightbox Modal -->
+  <div id="lightbox-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Galería de fotos del hotel">
+    <div class="lightbox-backdrop" id="lb-close-backdrop"></div>
+    <div class="lightbox-shell">
+      <div class="lightbox-top">
+        <div>
+          <h3 id="lb-hotel-title">Galería</h3>
+          <span id="lb-counter" class="lb-counter">1 / 1</span>
+        </div>
+        <button id="lb-close" class="icon-close" type="button" aria-label="Cerrar galería">✕</button>
+      </div>
+
+      <div class="lb-cats" id="lb-cats"></div>
+
+      <div class="lb-stage" id="lb-stage">
+        <button id="lb-prev" class="lb-arrow left" type="button" aria-label="Foto anterior">‹</button>
+        <img id="lb-img" src="" alt="" />
+        <button id="lb-next" class="lb-arrow right" type="button" aria-label="Foto siguiente">›</button>
+      </div>
+
+      <div id="lb-caption" class="lb-caption"></div>
+      <div id="lb-thumbs" class="lb-thumbs"></div>
+    </div>
+  </div>
+
+  <!-- Share With Wife Modal -->
+  <div id="share-modal" class="modal hidden" role="dialog" aria-modal="true" aria-label="Compartir con mi esposa">
+    <div class="lightbox-backdrop" id="share-close-backdrop"></div>
+    <div class="share-dialog">
+      <div class="share-dialog-head">
+        <h3>📲 Compartir con tu Esposa</h3>
+        <button id="share-close" class="icon-close" type="button" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="qr-box">
+        <div id="qr-container" class="qr-container"></div>
+        <div class="qr-info">
+          <strong>1. Enlace público listo (funciona con datos móviles o cualquier Wi-Fi)</strong>
+          <p class="muted">Tu esposa puede escanear este QR con la cámara de su celular o iPad, o abrir directamente el enlace:</p>
+          <div class="url-copy-row">
+            <code id="lan-url-text">https://lmsutools.github.io/vacaciones-familia-colombia/</code>
+            <button id="btn-copy-url" class="btn-ghost-sm" type="button">Copiar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="share-divider">o envía un resumen inmediato</div>
+
+      <div class="wa-preview-box">
+        <label class="sim-label" for="wa-message-preview">Mensaje listo para WhatsApp (incluye tus favoritos ❤️):</label>
+        <textarea id="wa-message-preview" rows="6" readonly></textarea>
+        <div class="share-modal-btns">
+          <a id="btn-wa-link" class="btn-wa" href="#" target="_blank" rel="noopener noreferrer">💬 Abrir WhatsApp con resumen</a>
+          <button id="btn-copy-wa" class="btn-ghost-sm" type="button">📋 Copiar texto</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="data/hotels_data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
